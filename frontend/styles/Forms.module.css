@@ -1,0 +1,21 @@
+.dino_bg {
+  background: url("../public/img/dino-bg.png") no-repeat center center;
+  background-size: cover;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form {
+  width: 32vw;
+  background-color: #fff;
+  position: relative;
+}
+
+.input {
+  width: 100%;
+  border: none;
+  border-bottom-width: 2px;
+}
