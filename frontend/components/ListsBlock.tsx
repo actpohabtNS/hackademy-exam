@@ -1,6 +1,9 @@
+import Navbar from "./Navbar";
+
 const ListsBlock = () => {
   return (
-    <div className="h-screen">
+    <div className="h-screen w-full">
+      <Navbar />
       ListsBlock
     </div>
   )
