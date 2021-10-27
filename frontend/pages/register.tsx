@@ -47,7 +47,7 @@ const Register: NextPage = () => {
           <Button
             type="button"
             text="Sign up"
-            className="bg-yellow-300 hover:bg-yellow-400 self-end"
+            className="bg-yellow-350 hover:bg-yellow-400 self-end"
             onClick={() => signUp(email, password)}
           />
         </div>

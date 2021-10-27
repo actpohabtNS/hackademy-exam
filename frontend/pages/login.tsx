@@ -33,7 +33,7 @@ const Login: NextPage = () => {
         <div className="mb-2 font-roboto text-lg">
           <span>No account?</span>&nbsp;
           <Link href="/register">
-            <a className="text-yellow-300 hover:text-yellow-400 hover:underline">Create one!</a>
+            <a className="text-yellow-350 hover:text-yellow-400 hover:underline">Create one!</a>
           </Link>
 
           <br />
@@ -48,7 +48,7 @@ const Login: NextPage = () => {
           <Button
             type="button"
             text="Sign in"
-            className="bg-yellow-300 self-end hover:bg-yellow-400"
+            className="bg-yellow-350 self-end hover:bg-yellow-400"
             onClick={() => signIn(email, password)}
           />
         </div>

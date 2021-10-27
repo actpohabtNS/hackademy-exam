@@ -26,7 +26,7 @@ const ForgotPassword: NextPage = () => {
           <Button
             type="button"
             text="Sign in"
-            className="bg-yellow-300 hover:bg-yellow-400 self-end"
+            className="bg-yellow-350 hover:bg-yellow-400 self-end"
           />
         </div>
 

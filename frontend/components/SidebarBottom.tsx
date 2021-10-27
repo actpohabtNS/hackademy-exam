@@ -10,17 +10,17 @@ const SidebarBottom = ({ className } : Props) => {
   <div className={`w-full box-border flex justify-around text-black ${className}`}>
        <FontAwesomeIcon
         icon={faSlidersH}
-        className="cursor-pointer hover:text-gray-900"
+        className="cursor-pointer hover:text-gray-800"
        />
 
       <FontAwesomeIcon
         icon={faGlobeAmericas}
-        className="cursor-pointer hover:text-gray-900"
+        className="cursor-pointer hover:text-gray-800"
        />
 
       <FontAwesomeIcon
         icon={faCog}
-        className="cursor-pointer hover:text-gray-900"
+        className="cursor-pointer hover:text-gray-800"
        />
     </div>
   )

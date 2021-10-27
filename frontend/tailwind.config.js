@@ -6,7 +6,13 @@ module.exports = {
       'ns': ['Noto Sans', 'sans-serif'],
       'roboto': ['Roboto', 'sans-serif']
     },
-    extend: {},
+    extend: {
+      colors: {
+        yellow: {
+          350: "#FCD620",
+        }
+      },
+    },
   },
   variants: {
     extend: {},

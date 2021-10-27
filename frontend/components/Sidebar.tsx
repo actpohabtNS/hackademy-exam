@@ -6,7 +6,7 @@ import SidebarBottom from "./SidebarBottom";
 
 const Sidebar = () => {
   return (
-    <div className="w-2/12 h-screen p-4 bg-yellow-300 flex flex-col items-start relative">
+    <div className="w-2/12 h-screen p-4 bg-yellow-350 flex flex-col items-start relative">
       <Image
         src="/img/logo-white.png"
         alt="openware logo"
@@ -20,7 +20,7 @@ const Sidebar = () => {
       />
       <AddList className="mt-2" />
       
-      <SidebarBottom className="px-16 text-xl mt-auto" />
+      <SidebarBottom className="px-12 text-xl mt-auto" />
     </div>
   )
 }

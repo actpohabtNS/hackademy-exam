@@ -33,7 +33,7 @@ const AddList = ({ className } : Props) => {
       {
         isActive &&
         <button
-          className="text-yellow-300 border-0 ml-2 hover:outline-none hover:text-yellow-500"
+          className="text-yellow-350 border-0 ml-2 hover:outline-none hover:text-yellow-500"
         >
           Add
         </button>
