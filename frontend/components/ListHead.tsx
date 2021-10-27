@@ -1,7 +1,8 @@
-import { useContext, useState } from 'react'
+import { MouseEvent, useContext, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faListUl, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { ListHeadsContext } from '../context/listHeadsContext'
+import { CurrListContext } from '../context/currListContext'
  
 type Props = {
   className?: string,
@@ -11,13 +12,25 @@ type Props = {
 
 const ListHead = ({ className, listName, listId } : Props) => {
   const [isHovered, setHovered] = useState(false);
-  const { dispatch } = useContext(ListHeadsContext);
+  const { dispatch: dispatchListHead } = useContext(ListHeadsContext);
+  const { state: { list: currList }, dispatch: dispatchCurrList } = useContext(CurrListContext);
+
+  const handleRemoveList = (e: MouseEvent<SVGSVGElement>) => {
+    e.stopPropagation();
+    dispatchListHead({ type: "delete", listHeadId: listId });
+    dispatchCurrList({ type: "remove" });
+  }
 
   return (
     <div
-      className={`text-black w-full flex px-2 py-0.5 text-xl font-ns focus:outline-none cursor-pointer hover:bg-yellow-100 ${className}`}
+      className={
+        `${ (currList && listId === currList.id) ? "bg-yellow-100" : "" }
+        text-black w-full flex px-2 py-0.5 text-xl font-ns focus:outline-none cursor-pointer hover:bg-yellow-100
+        ${className}`
+      }
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onClick={() => dispatchCurrList({ type: "set", listId })}
     >
       <FontAwesomeIcon
         icon={faListUl}
@@ -35,7 +48,7 @@ const ListHead = ({ className, listName, listId } : Props) => {
           icon={faTrashAlt}
           size="sm"
           className="text-gray-600 mr-2 self-center hover:text-red-500"
-          onClick={() => dispatch({type: "delete", listHeadId: listId})}
+          onClick={e => handleRemoveList(e)}
         />
       }
       

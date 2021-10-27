@@ -7,18 +7,17 @@ const Navbar = () => {
       <div className="w-1/4 border bg-gray-100 py-1 px-4">
         <FontAwesomeIcon
           icon={faSearch}
-          className="mr-2 text-gray-700"
+          className="mr-2 text-gray-700 text-xl"
         />
         <input
-          className= "bg-transparent focus:outline-none focus:text-black"
+          className= "bg-transparent focus:outline-none focus:text-black placeholder-gray-500 text-xl"
           placeholder="Search"
         />
       </div>
 
       <FontAwesomeIcon
           icon={faUserCircle}
-          size="2x"
-          className="text-gray-400 cursor-pointer hover:text-gray-500"
+          className="text-gray-400 cursor-pointer hover:text-gray-500 text-4xl"
         />
     </div>
   )

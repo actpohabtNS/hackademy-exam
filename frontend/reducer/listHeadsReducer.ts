@@ -1,4 +1,4 @@
-import { listHead_T, list_T, task_T } from '../pages/api/taskTypes'
+import { listHead_T } from '../pages/api/taskTypes'
 
 export type listHeadsState_T = {
   listHeads: listHead_T[],

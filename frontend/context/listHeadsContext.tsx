@@ -1,5 +1,5 @@
 import { createContext, useReducer } from "react";
-import { listHeadsInitState, listHeadsReducer, listHeadsState_T } from "../reducer/listReducers";
+import { listHeadsInitState, listHeadsReducer, listHeadsState_T } from "../reducer/listHeadsReducer";
 
 export const ListHeadsContext = createContext<
                                   {state: listHeadsState_T, dispatch: React.Dispatch<any>}
