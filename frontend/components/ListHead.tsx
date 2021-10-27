@@ -21,8 +21,8 @@ const ListHead = ({ className, listName, listId } : Props) => {
     >
       <FontAwesomeIcon
         icon={faListUl}
-        size="lg"
-        className="text-xl text-black mr-2 self-center"
+        size="sm"
+        className="text-black mr-2 self-center"
       />
 
       <span className="inline-block flex-1">
@@ -33,8 +33,8 @@ const ListHead = ({ className, listName, listId } : Props) => {
         isHovered &&
         <FontAwesomeIcon
           icon={faTrashAlt}
-          size="lg"
-          className="text-xl text-gray-600 mr-2 self-center hover:text-red-500"
+          size="sm"
+          className="text-gray-600 mr-2 self-center hover:text-red-500"
           onClick={() => dispatch({type: "delete", listHeadId: listId})}
         />
       }

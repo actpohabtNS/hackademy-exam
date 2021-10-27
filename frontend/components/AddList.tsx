@@ -36,8 +36,8 @@ const AddList = ({ className } : Props) => {
     >
       <FontAwesomeIcon
         icon={faPlus}
-        size="lg"
-        className="text-xl text-black mr-2 self-center"
+        size="sm"
+        className="text-black mr-2 self-center"
       />
 
       <input
