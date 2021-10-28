@@ -8,6 +8,8 @@ type currListAction_T =
   | { type: "set", listId: number }
   | { type: "remove" }
   | { type: "add_task", newTask: task_T }
+  | { type: "remove_task", taskId: number }
+  | { type: "update_task", updatedTask: task_T }
   | { type: "mark_completed", taskId: number }
   | { type: "mark_incompleted", taskId: number }
 
@@ -38,7 +40,7 @@ const lists : list_T[] = [
       {
         name: "Completed task",
         createdAt: new Date(Date.now()),
-        id: Date.now(),
+        id: Date.now() + 40,
         description: "",
       }
     ]
@@ -77,7 +79,31 @@ export const currListReducer = (state: currListState_T, action : currListAction_
       newState.list!.tasks = [ ...newState.list!.tasks, action.newTask ];
       
       return newState;
-    }  
+    }
+
+    case 'remove_task': {
+      assertNotEmpty(state.list);
+
+      let newState = { list: { ...state.list! } };
+      newState.list!.tasks = [ ...newState.list!.tasks.filter(task => task.id !== action.taskId) ];
+      newState.list!.completed = [ ...newState.list!.completed.filter(task => task.id !== action.taskId) ];
+      
+      return newState;
+    }
+
+    case 'update_task': {
+      assertNotEmpty(state.list);
+
+      let newState = { list: { ...state.list! } };
+
+      if (~newState.list!.tasks.findIndex(task => task.id === action.updatedTask.id)) {
+        newState.list!.tasks = [ ...newState.list!.tasks.map(task => task.id === action.updatedTask.id ? action.updatedTask : task) ];
+      } else {
+        newState.list!.completed = [ ...newState.list!.completed.map(task => task.id === action.updatedTask.id ? action.updatedTask : task) ];
+      }
+
+      return newState;
+    }
 
     case 'mark_completed': {   
       assertNotEmpty(state.list);
