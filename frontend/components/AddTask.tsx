@@ -1,22 +1,32 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { useContext } from 'react'
+import { CurrListContext } from '../context/currListContext'
+import { task_T } from '../pages/api/taskTypes'
+import TodoBlock from './ToDoBlock'
 
 type Props = {
   className?: string,
 }
 
 const AddTask = ({ className } : Props) => {
+  const { state, dispatch } = useContext(CurrListContext);
+
+  const createTask = () : task_T => {
+    return {
+      name: `Item ${state.list?.tasks.length! + 1}`,
+      id: Date.now(),
+      createdAt: new Date(Date.now()),
+      description: ""
+    }
+  }
+
   return (
-    <div className={`w-full py-4 border-b-2 border-gray-200 text-yellow-350 cursor-pointer hover:text-yellow-400 hover:bg-gray-50 ${className}`}>
-      <FontAwesomeIcon
-        icon={faPlus}
-        size="lg"
-        className="mr-8"
-      />
-      <span className="text-2xl">
-        Add a task
-      </span>
-    </div>
+    <TodoBlock
+      icon={faPlus}
+      text="Add a task"
+      onBlockClick={() => dispatch({ type: "add_task", newTask: createTask() })}
+      className={`text-yellow-350 ${className}`}
+    />
   )
 }
 
