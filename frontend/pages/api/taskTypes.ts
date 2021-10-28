@@ -12,7 +12,7 @@ export type listHead_T = {
 
 export type list_T = {
   name: string,
-  id: Number,
+  id: number,
   tasks: Array<task_T>,
   completed: Array<task_T>,
 }

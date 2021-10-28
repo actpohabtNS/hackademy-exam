@@ -7,6 +7,7 @@ import TodoBlock from "./ToDoBlock";
 import { useState } from "react";
 import TaskDetails from "./TaskDetails";
 import React from "react";
+import ListOptionsMenu from "./ListOptionsMenu";
 
 type Props = {
   className?: string,
@@ -16,6 +17,7 @@ type Props = {
 const List = ({ className, list} : Props) => {
   const [completedClosed, setCompletedClosed] = useState(false);
   const [selectedTask, selectTask] = useState<task_T | null>(null);
+  const [menuOpened, setMenuOpened] = useState(false);
 
   const idsAreEqual = (task1 : task_T | null, task2 : task_T | null) => {
     if (!task1 || !task2) {
@@ -32,11 +34,26 @@ const List = ({ className, list} : Props) => {
             {list.name}
           </span>
 
-          <FontAwesomeIcon
-            icon={faEllipsisH}
-            size="lg"
-            className="hover:text-gray-700 cursor-pointer"
-          />
+          <div
+            className="focus:outline-none"
+            onFocus={() => setMenuOpened(true)}
+            onBlur={() => setMenuOpened(false)}
+            tabIndex={1000}
+          >
+            <FontAwesomeIcon
+              icon={faEllipsisH}
+              size="lg"
+              className="hover:text-gray-700 cursor-pointer focus:outline-none"
+              />
+            
+            {
+              menuOpened &&
+              <ListOptionsMenu
+              className="absolute transform -translate-x-16 translate-y-2"
+              listId={list.id}
+              />
+            } 
+          </div>
         </div>
 
         <AddTask /> 
