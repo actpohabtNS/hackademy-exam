@@ -9,6 +9,10 @@ Hackademy exam implementation. NOTE: It is prohibited to copy/paste or plagiariz
 4. Backend will start - don't close it
 5. Open localhost:3000 in your browser and enjoy :)
 
+## New version availible!
+
+Check also more enjoyable and feature-full [*version of the app*](https://github.com/actpohabtNS/hackademy-exam/tree/after-deadline).
+
 ## NOTE
 
 When registering a user, provide a correct email (containing @ symbol) and a password at least 8 characters long. Sorry for the inconvenience.
