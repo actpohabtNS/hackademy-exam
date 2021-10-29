@@ -21,10 +21,11 @@ type List struct {
 	Completed map[uint32]*Task `json:"completed"`
 }
 
-type listWithArr struct {
+type prodList struct {
 	Name      string `json:"name"`
 	Tasks     []Task `json:"tasks"`
 	Completed []Task `json:"completed"`
+	Id        uint32 `json:"id"`
 }
 
 func taskMapToArr(tasksMap map[uint32]*Task) []Task {
@@ -41,11 +42,12 @@ func taskMapToArr(tasksMap map[uint32]*Task) []Task {
 	return tasks
 }
 
-func getListWithArr(list List) listWithArr {
-	listWithArr := listWithArr{
+func getProdList(list List, id uint32) prodList {
+	listWithArr := prodList{
 		Name:      list.Name,
 		Tasks:     taskMapToArr(list.Tasks),
 		Completed: taskMapToArr(list.Completed),
+		Id:        id,
 	}
 
 	return listWithArr
@@ -97,7 +99,7 @@ func getListHandler(w http.ResponseWriter, r *http.Request, u User, _ UserReposi
 	}
 
 	w.WriteHeader(http.StatusOK)
-	bytes, _ := json.Marshal(getListWithArr(*list))
+	bytes, _ := json.Marshal(getProdList(*list, listId))
 	_, _ = w.Write(bytes)
 }
 

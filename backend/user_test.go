@@ -302,7 +302,7 @@ func TestUsers_JWT(t *testing.T) {
 		resp = doRequest(getReq, nil)
 
 		assertStatus(t, 200, resp)
-		assertBody(t, "{\"name\":\"newList\",\"tasks\":[],\"completed\":[]}", resp)
+		assertBody(t, "{\"name\":\"newList\",\"tasks\":[],\"completed\":[],\"id\":"+idStr+"}", resp)
 	})
 
 	t.Run("update list", func(t *testing.T) {
@@ -353,7 +353,7 @@ func TestUsers_JWT(t *testing.T) {
 		getResp := doRequest(getReq, nil)
 
 		assertStatus(t, 200, getResp)
-		assertBody(t, "{\"name\":\"Updated List\",\"tasks\":[],\"completed\":[]}", getResp)
+		assertBody(t, "{\"name\":\"Updated List\",\"tasks\":[],\"completed\":[],\"id\":"+idStr+"}", getResp)
 	})
 
 	t.Run("delete list", func(t *testing.T) {
