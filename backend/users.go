@@ -37,9 +37,9 @@ func validateEmail(email string) error {
 }
 
 func validatePassword(password string) error {
-	// 2. Password at least 8 symbols
-	if len(password) < 8 {
-		return errors.New("password must be at least 8 symbols")
+	// 2. Password at least 4 symbols
+	if len(password) < 4 {
+		return errors.New("password must be at least 4 symbols")
 	}
 	return nil
 }
