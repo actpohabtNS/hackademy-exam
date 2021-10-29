@@ -1,6 +1,8 @@
 import Image from 'next/image'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons'
+import { signOut } from '../pages/api/auth'
+import Router from 'next/router'
 
 type Props = {
   className?: string,
@@ -17,7 +19,10 @@ const AccountMenu = ({ className } : Props) => {
           </span>
         </div>
 
-        <span className="text-gray-400 text-md cursor-pointer hover:text-gray-600 hover:underline">
+        <span
+          className="text-gray-400 text-md cursor-pointer hover:text-gray-600 hover:underline"
+          onClick={() => {signOut(); Router.push('/login')}}
+        >
           Sign out
         </span>
       </div>

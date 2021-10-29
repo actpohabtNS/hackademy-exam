@@ -1,15 +1,17 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { NextPage } from 'next'
 import Router from 'next/router'
 import formStyles from '../styles/Forms.module.css' 
 import Form from '../components/Form'
 import Input from '../components/Input'
 import Button from '../components/Button'
-import { signUp } from './api/auth'
+import isAuthenticated, { signUp } from './api/auth'
 
 const Register: NextPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {isAuthenticated() && Router.push('/')})
 
   return (
     <div className={ formStyles.dino_bg }>
@@ -41,14 +43,14 @@ const Register: NextPage = () => {
             type="button"
             text="Back"
             className="bg-gray-400 hover:bg-gray-500 self-end mr-6"
-            onClick={() => Router.push('login')}
+            onClick={() => Router.push('/login')}
           />
 
           <Button
             type="button"
             text="Sign up"
             className="bg-yellow-350 hover:bg-yellow-400 self-end"
-            onClick={() => signUp(email, password)}
+            onClick={async () => await signUp(email, password) ? Router.push('/') : ""}
           />
         </div>
 

@@ -2,6 +2,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUserCircle, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 
 import TodoBlock from "./ToDoBlock";
+import { signOut } from '../pages/api/auth';
+import Router from 'next/router';
 
 type Props = {
   className?: string,
@@ -21,7 +23,10 @@ const SidebarMoreMenu = ({ className } : Props) => {
         </span>
       </div>
 
-      <div className="hover:bg-gray-100 px-6 pr-20 py-4 rounded-md">
+      <div
+        className="hover:bg-gray-100 px-6 pr-20 py-4 rounded-md"
+        onClick={() => {signOut(); Router.push('/login')}}
+      >
         <FontAwesomeIcon
           icon={faSignOutAlt}
           size="lg"
