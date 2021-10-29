@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"crypto/md5"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 	"log"
@@ -18,39 +17,29 @@ func wrapJwt(jwt *JWTService, f func(http.ResponseWriter, *http.Request, *JWTSer
 	}
 }
 
-func createEnvVars() {
-	_ = os.Setenv("CAKE_SUPERADMIN_EMAIL", "supadmin@mail.com")
-	_ = os.Setenv("CAKE_SUPERADMIN_PASSWORD", "IamSuperadmin")
-	_ = os.Setenv("CAKE_SUPERADMIN_CAKE", "bestManCake")
-}
-
-func processEnvVars(u *UserService) {
-	passwordDigest := md5.New().Sum([]byte(os.Getenv("CAKE_SUPERADMIN_PASSWORD")))
-	supadmin := User{
-		Email:          os.Getenv("CAKE_SUPERADMIN_EMAIL"),
-		PasswordDigest: string(passwordDigest),
-		FavoriteCake:   os.Getenv("CAKE_SUPERADMIN_CAKE"),
-	}
-	_ = u.repository.Add(supadmin.Email, supadmin)
-}
-
 func newRouter(u *UserService, jwtService *JWTService) *mux.Router {
-	createEnvVars()
 	r := mux.NewRouter()
 
 	r.HandleFunc("/user/signup", u.Register).Methods(http.MethodPost)
 	r.HandleFunc("/user/signin", wrapJwt(jwtService, u.JWT)).Methods(http.MethodPost)
-	processEnvVars(u)
+	r.HandleFunc("/todo/lists", jwtService.jwtAuth(u.repository, createListHandler)).Methods(http.MethodPost)
+	r.HandleFunc("/todo/listHeads", jwtService.jwtAuth(u.repository, getListHeadsHandler)).Methods(http.MethodGet)
+	r.HandleFunc("/todo/lists/{list_id}", jwtService.jwtAuth(u.repository, getListHandler)).Methods(http.MethodGet)
+	r.HandleFunc("/todo/lists/{list_id}", jwtService.jwtAuth(u.repository, updateListHandler)).Methods(http.MethodPut)
+	r.HandleFunc("/todo/lists/{list_id}", jwtService.jwtAuth(u.repository, deleteListHandler)).Methods(http.MethodDelete)
 	return r
 }
 
 func newLoggingRouter(u *UserService, jwtService *JWTService) *mux.Router {
-	createEnvVars()
 	r := mux.NewRouter()
 
 	r.HandleFunc("/user/signup", logRequest(u.Register)).Methods(http.MethodPost)
 	r.HandleFunc("/user/signin", logRequest(wrapJwt(jwtService, u.JWT))).Methods(http.MethodPost)
-	processEnvVars(u)
+	r.HandleFunc("/todo/lists", logRequest(jwtService.jwtAuth(u.repository, createListHandler))).Methods(http.MethodPost)
+	r.HandleFunc("/todo/listHeads", logRequest(jwtService.jwtAuth(u.repository, getListHeadsHandler))).Methods(http.MethodGet)
+	r.HandleFunc("/todo/lists/{list_id}", logRequest(jwtService.jwtAuth(u.repository, getListHandler))).Methods(http.MethodGet)
+	r.HandleFunc("/todo/lists/{list_id}", logRequest(jwtService.jwtAuth(u.repository, updateListHandler))).Methods(http.MethodPut)
+	r.HandleFunc("/todo/lists/{list_id}", logRequest(jwtService.jwtAuth(u.repository, deleteListHandler))).Methods(http.MethodDelete)
 	return r
 }
 

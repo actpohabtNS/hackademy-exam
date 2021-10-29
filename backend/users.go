@@ -10,9 +10,9 @@ import (
 
 type User struct {
 	Email          string
-	Banned         bool
 	PasswordDigest string
-	FavoriteCake   string
+	IdToList       map[uint32]*List
+	IdToListHead   map[uint32]*ListHead
 }
 type UserRepository interface {
 	Add(string, User) error
@@ -71,6 +71,8 @@ func (u *UserService) Register(w http.ResponseWriter, r *http.Request) {
 	newUser := User{
 		Email:          params.Email,
 		PasswordDigest: string(passwordDigest),
+		IdToListHead:   make(map[uint32]*ListHead),
+		IdToList:       make(map[uint32]*List),
 	}
 
 	err = u.repository.Add(params.Email, newUser)

@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"testing"
 )
 
@@ -66,6 +67,13 @@ func assertBody(t *testing.T, expected string, r parsedResponse) {
 	if actual != expected {
 		t.Errorf("Unexpected response body. Expected: %s,actual: %s", expected, actual)
 	}
+}
+
+func getListIdStr(r parsedResponse) string {
+	respListHead := &ListHead{}
+	_ = json.Unmarshal(r.body, respListHead)
+
+	return strconv.Itoa(int(respListHead.Id))
 }
 
 func TestUsers_JWT(t *testing.T) {
@@ -139,5 +147,257 @@ func TestUsers_JWT(t *testing.T) {
 		resp := doRequest(http.NewRequest(http.MethodPost, ts.URL+"/user/signin", prepareParams(t, jwtParams)))
 		assertStatus(t, 422, resp)
 		assertBody(t, "invalid login credentials", resp)
+	})
+
+	t.Run("create list without jwt", func(t *testing.T) {
+		u := newTestUserService()
+
+		jwtService, jwtErr := NewJWTService("pubkey.rsa", "privkey.rsa")
+		if jwtErr != nil {
+			panic(jwtErr)
+		}
+
+		ts := httptest.NewServer(newRouter(u, jwtService))
+		defer ts.Close()
+
+		registerParams := map[string]interface{}{
+			"email":    "test@mail.com",
+			"password": "somepass",
+		}
+		doRequest(http.NewRequest(http.MethodPost, ts.URL+"/user/signup", prepareParams(t, registerParams)))
+
+		newListParams := map[string]interface{}{
+			"name": "newList",
+		}
+
+		resp := doRequest(http.NewRequest(http.MethodPost, ts.URL+"/todo/lists", prepareParams(t, newListParams)))
+		assertStatus(t, 401, resp)
+		assertBody(t, "unauthorized", resp)
+	})
+
+	t.Run("create list", func(t *testing.T) {
+		u := newTestUserService()
+
+		jwtService, jwtErr := NewJWTService("pubkey.rsa", "privkey.rsa")
+		if jwtErr != nil {
+			panic(jwtErr)
+		}
+
+		ts := httptest.NewServer(newRouter(u, jwtService))
+		defer ts.Close()
+
+		registerParams := map[string]interface{}{
+			"email":    "test@mail.com",
+			"password": "somepass",
+		}
+		doRequest(http.NewRequest(http.MethodPost, ts.URL+"/user/signup", prepareParams(t, registerParams)))
+
+		jwtParams := map[string]interface{}{
+			"email":    "test@mail.com",
+			"password": "somepass",
+		}
+		jwtResp := doRequest(http.NewRequest(http.MethodPost, ts.URL+"/user/signin", prepareParams(t, jwtParams)))
+
+		newListParams := map[string]interface{}{
+			"name": "newList",
+		}
+
+		req, _ := http.NewRequest(http.MethodPost, ts.URL+"/todo/lists", prepareParams(t, newListParams))
+		req.Header.Set("Authorization", "Bearer "+string(jwtResp.body))
+		resp := doRequest(req, nil)
+
+		idStr := getListIdStr(resp)
+
+		assertStatus(t, 201, resp)
+		assertBody(t, "{\"name\":\"newList\",\"id\":"+idStr+"}", resp)
+	})
+
+	t.Run("get listHeaders", func(t *testing.T) {
+		u := newTestUserService()
+
+		jwtService, jwtErr := NewJWTService("pubkey.rsa", "privkey.rsa")
+		if jwtErr != nil {
+			panic(jwtErr)
+		}
+
+		ts := httptest.NewServer(newRouter(u, jwtService))
+		defer ts.Close()
+
+		registerParams := map[string]interface{}{
+			"email":    "test@mail.com",
+			"password": "somepass",
+		}
+		doRequest(http.NewRequest(http.MethodPost, ts.URL+"/user/signup", prepareParams(t, registerParams)))
+
+		jwtParams := map[string]interface{}{
+			"email":    "test@mail.com",
+			"password": "somepass",
+		}
+		jwtResp := doRequest(http.NewRequest(http.MethodPost, ts.URL+"/user/signin", prepareParams(t, jwtParams)))
+
+		newList1Params := map[string]interface{}{
+			"name": "List first",
+		}
+
+		req1, _ := http.NewRequest(http.MethodPost, ts.URL+"/todo/lists", prepareParams(t, newList1Params))
+		req1.Header.Set("Authorization", "Bearer "+string(jwtResp.body))
+		resp1 := doRequest(req1, nil)
+
+		id1Str := getListIdStr(resp1)
+
+		newList2Params := map[string]interface{}{
+			"name": "List second",
+		}
+
+		req2, _ := http.NewRequest(http.MethodPost, ts.URL+"/todo/lists", prepareParams(t, newList2Params))
+		req2.Header.Set("Authorization", "Bearer "+string(jwtResp.body))
+		resp2 := doRequest(req2, nil)
+
+		id2Str := getListIdStr(resp2)
+
+		getReq, _ := http.NewRequest(http.MethodGet, ts.URL+"/todo/listHeads", nil)
+		getReq.Header.Set("Authorization", "Bearer "+string(jwtResp.body))
+		resp := doRequest(getReq, nil)
+
+		assertStatus(t, 200, resp)
+		assertBody(t, "[{\"name\":\"List first\",\"id\":"+id1Str+"},{\"name\":\"List second\",\"id\":"+id2Str+"}]", resp)
+	})
+
+	t.Run("get list", func(t *testing.T) {
+		u := newTestUserService()
+
+		jwtService, jwtErr := NewJWTService("pubkey.rsa", "privkey.rsa")
+		if jwtErr != nil {
+			panic(jwtErr)
+		}
+
+		ts := httptest.NewServer(newRouter(u, jwtService))
+		defer ts.Close()
+
+		registerParams := map[string]interface{}{
+			"email":    "test@mail.com",
+			"password": "somepass",
+		}
+		doRequest(http.NewRequest(http.MethodPost, ts.URL+"/user/signup", prepareParams(t, registerParams)))
+
+		jwtParams := map[string]interface{}{
+			"email":    "test@mail.com",
+			"password": "somepass",
+		}
+		jwtResp := doRequest(http.NewRequest(http.MethodPost, ts.URL+"/user/signin", prepareParams(t, jwtParams)))
+
+		newListParams := map[string]interface{}{
+			"name": "newList",
+		}
+
+		req, _ := http.NewRequest(http.MethodPost, ts.URL+"/todo/lists", prepareParams(t, newListParams))
+		req.Header.Set("Authorization", "Bearer "+string(jwtResp.body))
+		resp := doRequest(req, nil)
+
+		idStr := getListIdStr(resp)
+
+		getReq, _ := http.NewRequest(http.MethodGet, ts.URL+"/todo/lists/"+idStr, nil)
+		getReq.Header.Set("Authorization", "Bearer "+string(jwtResp.body))
+		resp = doRequest(getReq, nil)
+
+		assertStatus(t, 200, resp)
+		assertBody(t, "{\"name\":\"newList\",\"tasks\":[],\"completed\":[]}", resp)
+	})
+
+	t.Run("update list", func(t *testing.T) {
+		u := newTestUserService()
+
+		jwtService, jwtErr := NewJWTService("pubkey.rsa", "privkey.rsa")
+		if jwtErr != nil {
+			panic(jwtErr)
+		}
+
+		ts := httptest.NewServer(newRouter(u, jwtService))
+		defer ts.Close()
+
+		registerParams := map[string]interface{}{
+			"email":    "test@mail.com",
+			"password": "somepass",
+		}
+		doRequest(http.NewRequest(http.MethodPost, ts.URL+"/user/signup", prepareParams(t, registerParams)))
+
+		jwtParams := map[string]interface{}{
+			"email":    "test@mail.com",
+			"password": "somepass",
+		}
+		jwtResp := doRequest(http.NewRequest(http.MethodPost, ts.URL+"/user/signin", prepareParams(t, jwtParams)))
+
+		newListParams := map[string]interface{}{
+			"name": "newList",
+		}
+
+		createReq, _ := http.NewRequest(http.MethodPost, ts.URL+"/todo/lists", prepareParams(t, newListParams))
+		createReq.Header.Set("Authorization", "Bearer "+string(jwtResp.body))
+		resp := doRequest(createReq, nil)
+
+		idStr := getListIdStr(resp)
+
+		updateListParams := map[string]interface{}{
+			"name": "Updated List",
+		}
+
+		updateReq, _ := http.NewRequest(http.MethodPut, ts.URL+"/todo/lists/"+idStr, prepareParams(t, updateListParams))
+		updateReq.Header.Set("Authorization", "Bearer "+string(jwtResp.body))
+		updateResp := doRequest(updateReq, nil)
+		assertStatus(t, 200, updateResp)
+		assertBody(t, "{\"name\":\"Updated List\",\"id\":"+idStr+"}", updateResp)
+
+		getReq, _ := http.NewRequest(http.MethodGet, ts.URL+"/todo/lists/"+idStr, nil)
+		getReq.Header.Set("Authorization", "Bearer "+string(jwtResp.body))
+		getResp := doRequest(getReq, nil)
+
+		assertStatus(t, 200, getResp)
+		assertBody(t, "{\"name\":\"Updated List\",\"tasks\":[],\"completed\":[]}", getResp)
+	})
+
+	t.Run("delete list", func(t *testing.T) {
+		u := newTestUserService()
+
+		jwtService, jwtErr := NewJWTService("pubkey.rsa", "privkey.rsa")
+		if jwtErr != nil {
+			panic(jwtErr)
+		}
+
+		ts := httptest.NewServer(newRouter(u, jwtService))
+		defer ts.Close()
+
+		registerParams := map[string]interface{}{
+			"email":    "test@mail.com",
+			"password": "somepass",
+		}
+		doRequest(http.NewRequest(http.MethodPost, ts.URL+"/user/signup", prepareParams(t, registerParams)))
+
+		jwtParams := map[string]interface{}{
+			"email":    "test@mail.com",
+			"password": "somepass",
+		}
+		jwtResp := doRequest(http.NewRequest(http.MethodPost, ts.URL+"/user/signin", prepareParams(t, jwtParams)))
+
+		newListParams := map[string]interface{}{
+			"name": "newList",
+		}
+
+		createReq, _ := http.NewRequest(http.MethodPost, ts.URL+"/todo/lists", prepareParams(t, newListParams))
+		createReq.Header.Set("Authorization", "Bearer "+string(jwtResp.body))
+		resp := doRequest(createReq, nil)
+
+		idStr := getListIdStr(resp)
+
+		deleteReq, _ := http.NewRequest(http.MethodDelete, ts.URL+"/todo/lists/"+idStr, nil)
+		deleteReq.Header.Set("Authorization", "Bearer "+string(jwtResp.body))
+		deleteResp := doRequest(deleteReq, nil)
+		assertStatus(t, 204, deleteResp)
+		assertBody(t, "", deleteResp)
+
+		getReq, _ := http.NewRequest(http.MethodGet, ts.URL+"/todo/lists/"+idStr, nil)
+		getReq.Header.Set("Authorization", "Bearer "+string(jwtResp.body))
+		getResp := doRequest(getReq, nil)
+
+		assertStatus(t, 422, getResp)
 	})
 }
