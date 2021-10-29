@@ -232,8 +232,8 @@ func deleteTaskHandler(w http.ResponseWriter, r *http.Request, u User, users Use
 		return
 	}
 
-	delete(list.Tasks, listId)
-	delete(list.Completed, listId)
+	delete(list.Tasks, taskId)
+	delete(list.Completed, taskId)
 
 	err := users.Update(u.Email, u)
 	if err != nil {
