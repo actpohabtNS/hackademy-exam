@@ -36,7 +36,7 @@ const AccountMenu = ({ className } : Props) => {
 
         <div className="flex-7 flex flex-col justify-start items-start">
           <span className="text-lg text-black">
-            user@account.com
+            {localStorage.getItem("email")}
           </span>
           <span className="text-md text-yellow-350 cursor-pointer hover:text-yellow-400 hover:underline">
             My profile

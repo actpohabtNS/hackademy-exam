@@ -6,11 +6,12 @@ import { createList } from '../pages/api/lists'
  
 type Props = {
   className?: string,
+  closed?: boolean
 }
 
 const defaultListName = "New List";
 
-const AddList = ({ className } : Props) => {
+const AddList = ({ className, closed } : Props) => {
   const [name, setName] = useState(defaultListName);
   const [isActive, setActive] = useState(false);
   const { state, dispatch } = useContext(ListHeadsContext);
@@ -34,7 +35,7 @@ const AddList = ({ className } : Props) => {
 
   return (
     <div
-      className={`${isActive ? "bg-gray-100 text-gray-700" : "hover:bg-yellow-200"} w-full flex px-2 py-0.5 text-xl font-ns focus:outline-none cursor-pointer ${className}`}
+      className={`${isActive ? "bg-gray-100 text-gray-700" : "hover:bg-yellow-200"} w-full flex px-2 py-0.5 text-xl font-ns justify-center focus:outline-none cursor-pointer ${className}`}
       onFocus={() => setActive(true)}
       onBlur={(e) => handleBlur(e)}
       tabIndex={-1}
@@ -42,25 +43,32 @@ const AddList = ({ className } : Props) => {
       <FontAwesomeIcon
         icon={faPlus}
         size="sm"
-        className="text-black mr-2 self-center"
-      />
-
-      <input
-        value={name}
-        type="text"
-        className={`${!isActive ? "cursor-pointer" : ""} flex-1 w-0 border-0 bg-transparent focus:outline-none`}
-        onChange={(e) => setName(e.target.value)}
+        className="text-black self-center my-1.5"
       />
 
       {
-        isActive &&
-        <button
-          className="text-yellow-350 border-0 ml-2 hover:outline-none hover:text-yellow-500"
-          onClick={handleAddClick}
-        >
-          Add
-        </button>
+        !closed &&
+        <>
+          <input
+            value={name}
+            type="text"
+            className={`${!isActive ? "cursor-pointer" : ""} flex-1 w-0 border-0 bg-transparent ml-2 focus:outline-none`}
+            onChange={(e) => setName(e.target.value)}
+          />
+
+          {
+            isActive &&
+            <button
+              className="text-yellow-350 border-0 ml-2 hover:outline-none hover:text-yellow-500"
+              onClick={handleAddClick}
+            >
+              Add
+            </button>
+          }
+        </>
       }
+
+      
       
     </div>
   )

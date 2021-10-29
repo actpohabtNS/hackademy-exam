@@ -9,9 +9,10 @@ type Props = {
   className?: string,
   listName: string,
   listId: number,
+  closed?: boolean
 }
 
-const ListHead = ({ className, listName, listId } : Props) => {
+const ListHead = ({ className, listName, listId, closed } : Props) => {
   const [isHovered, setHovered] = useState(false);
   const { dispatch: dispatchListHead } = useContext(ListHeadsContext);
   const { state: { list: currList }, dispatch: dispatchCurrList } = useContext(CurrListContext);
@@ -45,7 +46,7 @@ const ListHead = ({ className, listName, listId } : Props) => {
     <div
       className={
         `${ (currList && listId === currList.id) ? "bg-yellow-100" : "" }
-        text-black w-full flex px-2 py-0.5 text-xl font-ns focus:outline-none cursor-pointer hover:bg-yellow-100
+        text-black w-full flex justify-center px-2 py-0.5 text-xl font-ns focus:outline-none cursor-pointer hover:bg-yellow-100
         ${className}`
       }
       onMouseEnter={() => setHovered(true)}
@@ -55,21 +56,26 @@ const ListHead = ({ className, listName, listId } : Props) => {
       <FontAwesomeIcon
         icon={faListUl}
         size="sm"
-        className="text-black mr-2 self-center"
+        className="text-black self-center my-1.5"
       />
 
-      <span className="inline-block flex-1">
-        {listName}
-      </span>
-
       {
-        isHovered &&
-        <FontAwesomeIcon
-          icon={faTrashAlt}
-          size="sm"
-          className="text-gray-600 mr-2 self-center hover:text-red-500"
-          onClick={e => handleRemoveList(e)}
-        />
+        !closed &&
+        <>
+          <span className="inline-block flex-1 ml-2">
+            {listName}
+          </span>
+
+          {
+            isHovered &&
+            <FontAwesomeIcon
+              icon={faTrashAlt}
+              size="sm"
+              className="text-gray-600 mr-2 self-center hover:text-red-500"
+              onClick={e => handleRemoveList(e)}
+            />
+          }
+        </>
       }
       
     </div>

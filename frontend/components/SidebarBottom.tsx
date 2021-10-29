@@ -5,13 +5,14 @@ import { useState } from 'react'
 
 type Props = {
   className?: string,
+  vertical?: boolean,
 }
 
-const SidebarBottom = ({ className } : Props) => {
+const SidebarBottom = ({ className, vertical } : Props) => {
   const [menuOpened, setMenuOpened] = useState(false);
 
   return (
-  <div className={`w-full box-border flex justify-around items-center text-black ${className}`}>
+  <div className={`w-full box-border flex ${vertical ? "flex-col gap-y-6" : "px-12"} justify-around items-center text-black ${className}`}>
        <FontAwesomeIcon
         icon={faSlidersH}
         className="cursor-pointer hover:text-gray-800"
@@ -36,7 +37,7 @@ const SidebarBottom = ({ className } : Props) => {
         {
           menuOpened &&
           <SidebarMoreMenu
-            className="absolute bottom-12 transform -translate-x-20"
+            className={`absolute bottom-12 transform ${vertical ? "-translate-x-4" : "-translate-x-20"}`}
           />
         }
       </div>

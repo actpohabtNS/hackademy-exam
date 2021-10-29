@@ -1,31 +1,32 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
+import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import AddList from "./AddList";
 import SidebarBottom from "./SidebarBottom";
 import { ListHeadsContext } from "../context/listHeadsContext";
 import ListHead from "./ListHead";
-import { loadListHeads } from "../pages/api/lists";
-import Router from "next/router";
-import { signOut } from "../pages/api/auth";
 
 const Sidebar = () => {
-  const { state, dispatch } = useContext(ListHeadsContext);
+  const [isClosed, setClosed] = useState(false);
+  const { state } = useContext(ListHeadsContext);
 
   return (
-    <div className="w-2/12 h-screen p-4 bg-yellow-350 flex flex-col items-start relative gap-y-3">
+    <div className={`${isClosed ? "items-center" : "w-2/12 items-start "} h-screen p-4 bg-yellow-350 flex flex-col relative gap-y-3`}>
       <Image
         src="/img/logo-white.png"
         alt="openware logo"
         width={40}
         height={28}
       />
-      <div className="py-1">
+      <div
+        className="py-1 p-2 cursor-pointer hover:text-gray-800"
+        onClick={() => setClosed(!isClosed)}
+      >
         <FontAwesomeIcon
-          icon={faChevronLeft}
+          icon={isClosed ? faChevronRight : faChevronLeft}
           size="lg"
-          className="mt-8 ml-2"
+          className="mt-8"
         />
       </div>
 
@@ -35,12 +36,16 @@ const Sidebar = () => {
           listName={listHead.name}
           listId={listHead.id}
           key={listHead.id}
+          closed={isClosed}
         />)
       }
 
-      <AddList />
+      <AddList closed={isClosed} />
 
-      <SidebarBottom className="px-12 text-xl mt-auto" />
+      <SidebarBottom
+        className="text-xl mt-auto"
+        vertical={isClosed}
+      />
     </div>
   )
 }

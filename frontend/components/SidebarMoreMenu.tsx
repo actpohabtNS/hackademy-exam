@@ -12,7 +12,7 @@ type Props = {
 const SidebarMoreMenu = ({ className } : Props) => {
   return (
     <div className={`${className} bg-white rounded-md flex flex-col cursor-pointer text-gray-400 font-semibold filter drop-shadow-xl`}>
-      <div className="hover:bg-gray-100 px-6 pr-20 py-4 rounded-md">
+      <div className="hover:bg-gray-100 px-6 flex pr-16 py-4 rounded-md">
         <FontAwesomeIcon
           icon={faUserCircle}
           size="lg"
@@ -24,7 +24,7 @@ const SidebarMoreMenu = ({ className } : Props) => {
       </div>
 
       <div
-        className="hover:bg-gray-100 px-6 pr-20 py-4 rounded-md"
+        className="hover:bg-gray-100 px-6 flex pr-16 py-4 rounded-md"
         onClick={() => {signOut(); Router.push('/login')}}
       >
         <FontAwesomeIcon
