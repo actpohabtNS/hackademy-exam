@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"strconv"
 	"testing"
+	"time"
 )
 
 type parsedResponse struct {
@@ -399,5 +400,54 @@ func TestUsers_JWT(t *testing.T) {
 		getResp := doRequest(getReq, nil)
 
 		assertStatus(t, 422, getResp)
+	})
+
+	t.Run("create task", func(t *testing.T) {
+		u := newTestUserService()
+
+		jwtService, jwtErr := NewJWTService("pubkey.rsa", "privkey.rsa")
+		if jwtErr != nil {
+			panic(jwtErr)
+		}
+
+		ts := httptest.NewServer(newRouter(u, jwtService))
+		defer ts.Close()
+
+		registerParams := map[string]interface{}{
+			"email":    "test@mail.com",
+			"password": "somepass",
+		}
+		doRequest(http.NewRequest(http.MethodPost, ts.URL+"/user/signup", prepareParams(t, registerParams)))
+
+		jwtParams := map[string]interface{}{
+			"email":    "test@mail.com",
+			"password": "somepass",
+		}
+		jwtResp := doRequest(http.NewRequest(http.MethodPost, ts.URL+"/user/signin", prepareParams(t, jwtParams)))
+
+		newListParams := map[string]interface{}{
+			"name": "newList",
+		}
+
+		createReq, _ := http.NewRequest(http.MethodPost, ts.URL+"/todo/lists", prepareParams(t, newListParams))
+		createReq.Header.Set("Authorization", "Bearer "+string(jwtResp.body))
+		resp := doRequest(createReq, nil)
+
+		idStr := getListIdStr(resp)
+
+		newTaskParams := map[string]interface{}{
+			"name":        "new task",
+			"createdAt":   time.Now(),
+			"description": "",
+		}
+
+		createTaskReq, _ := http.NewRequest(http.MethodPost, ts.URL+"/todo/lists/"+idStr+"/tasks", prepareParams(t, newTaskParams))
+		createTaskReq.Header.Set("Authorization", "Bearer "+string(jwtResp.body))
+		createTaskRes := doRequest(createTaskReq, nil)
+
+		taskIdStr := getListIdStr(createTaskRes)
+
+		assertStatus(t, 201, createTaskRes)
+		assertBody(t, "{\"name\":\"new task\",\"id\":"+taskIdStr+",\"created_at\":\"0001-01-01T00:00:00Z\",\"description\":\"\"}", createTaskRes)
 	})
 }

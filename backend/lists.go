@@ -8,15 +8,7 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
-	"time"
 )
-
-type Task struct {
-	Name        string    `json:"name"`
-	Id          uint32    `json:"id"`
-	CreatedAt   time.Time `json:"created_at"`
-	Description string    `json:"description"`
-}
 
 type ListHead struct {
 	Name string `json:"name"`
@@ -24,9 +16,39 @@ type ListHead struct {
 }
 
 type List struct {
+	Name      string           `json:"name"`
+	Tasks     map[uint32]*Task `json:"tasks"`
+	Completed map[uint32]*Task `json:"completed"`
+}
+
+type listWithArr struct {
 	Name      string `json:"name"`
 	Tasks     []Task `json:"tasks"`
 	Completed []Task `json:"completed"`
+}
+
+func taskMapToArr(tasksMap map[uint32]*Task) []Task {
+	var tasks []Task
+
+	for _, task := range tasksMap {
+		tasks = append(tasks, *task)
+	}
+
+	if tasks == nil {
+		tasks = []Task{}
+	}
+
+	return tasks
+}
+
+func getListWithArr(list List) listWithArr {
+	listWithArr := listWithArr{
+		Name:      list.Name,
+		Tasks:     taskMapToArr(list.Tasks),
+		Completed: taskMapToArr(list.Completed),
+	}
+
+	return listWithArr
 }
 
 type listNameParams struct {
@@ -43,7 +65,7 @@ func createListHandler(w http.ResponseWriter, r *http.Request, u User, users Use
 
 	newListId := uuid.New().ID()
 	newListHead := ListHead{params.Name, newListId}
-	newList := List{params.Name, []Task{}, []Task{}}
+	newList := List{params.Name, make(map[uint32]*Task), make(map[uint32]*Task)}
 
 	u.IdToListHead[newListId] = &newListHead
 	u.IdToList[newListId] = &newList
@@ -75,7 +97,7 @@ func getListHandler(w http.ResponseWriter, r *http.Request, u User, _ UserReposi
 	}
 
 	w.WriteHeader(http.StatusOK)
-	bytes, _ := json.Marshal(*list)
+	bytes, _ := json.Marshal(getListWithArr(*list))
 	_, _ = w.Write(bytes)
 }
 
