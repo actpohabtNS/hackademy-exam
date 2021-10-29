@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faListUl, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { ListHeadsContext } from '../context/listHeadsContext'
 import { CurrListContext } from '../context/currListContext'
+import { deleteList, getList } from '../pages/api/lists'
  
 type Props = {
   className?: string,
@@ -17,8 +18,27 @@ const ListHead = ({ className, listName, listId } : Props) => {
 
   const handleRemoveList = (e: MouseEvent<SVGSVGElement>) => {
     e.stopPropagation();
-    dispatchListHead({ type: "delete", listHeadId: listId });
-    dispatchCurrList({ type: "remove" });
+
+    async function delList() {
+      const status = await deleteList(listId);
+
+      if (status === 204) {
+        dispatchListHead({ type: "delete", listHeadId: listId });
+        dispatchCurrList({ type: "remove" });
+      } else {
+        console.log('Error removing list');
+      }
+    }
+    delList();
+  }
+
+  const handleSelectClick = () => {
+    async function selList() {
+      const list = await getList(listId);
+
+      dispatchCurrList({ type: "set", list });
+    }
+    selList();
   }
 
   return (
@@ -30,7 +50,7 @@ const ListHead = ({ className, listName, listId } : Props) => {
       }
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      onClick={() => dispatchCurrList({ type: "set", listId })}
+      onClick={handleSelectClick}
     >
       <FontAwesomeIcon
         icon={faListUl}

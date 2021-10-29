@@ -1,11 +1,20 @@
+import { AxiosInstance } from 'axios';
 import axios from './axios';
 
 export default function isAuthenticated(): boolean {
   if (typeof window !== "undefined") {
-    return Boolean(localStorage.getItem("email") && localStorage.getItem("password"));
+    return Boolean(localStorage.getItem("email") && localStorage.getItem("jwt"));
   }
 
   return false;
+}
+
+export function setUpBearerHeader(axios : AxiosInstance) {
+  axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem("jwt")}`;
+}
+
+const removeBearerHeader = (axios : AxiosInstance) => {
+  axios.defaults.headers.common['Authorization'] = "";
 }
 
 export async function signUp(email: string, password: string) {
@@ -34,6 +43,7 @@ export async function signIn(email: string, password: string) {
       localStorage.setItem("email", email);
       localStorage.setItem("jwt", response.data);
     }
+    setUpBearerHeader(axios);
     return true;
 
   } catch (error) {
@@ -47,4 +57,6 @@ export function signOut(): void {
     localStorage.removeItem("email");
     localStorage.removeItem("jwt");
   }
+
+  removeBearerHeader(axios);
 }

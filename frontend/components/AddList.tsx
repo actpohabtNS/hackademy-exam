@@ -2,6 +2,7 @@ import { FocusEvent, useContext, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { ListHeadsContext } from '../context/listHeadsContext'
+import { createList } from '../pages/api/lists'
  
 type Props = {
   className?: string,
@@ -22,9 +23,13 @@ const AddList = ({ className } : Props) => {
   }
 
   const handleAddClick = () => {
-    dispatch({ type: "add", newListHead: { name, id: state.listHeads.length } });
-    setActive(false);
-    setName(defaultListName);
+    async function crList() {
+      const listHead = await createList(name);
+      dispatch({ type: "add", newListHead: { name, id: listHead.id } });
+      setActive(false);
+      setName(defaultListName);
+    }
+    crList();
   }
 
   return (

@@ -1,11 +1,11 @@
-import { listHead_T, list_T, task_T } from '../pages/api/taskTypes'
+import { list_T, task_T } from '../pages/api/taskTypes'
 
 export type currListState_T = {
   list: list_T | null,
 }
 
 type currListAction_T = 
-  | { type: "set", listId: number }
+  | { type: "set", list: list_T }
   | { type: "remove" }
   | { type: "add_task", newTask: task_T }
   | { type: "remove_task", taskId: number }
@@ -18,46 +18,6 @@ export const currListInitState = {
   list: null
 };
 
-const lists : list_T[] = [
-  {
-    name: "Test list",
-    id: 0,
-    tasks: [
-      {
-        name: "Task 1",
-        createdAt: new Date(Date.now()),
-        id: Date.now(),
-        description: "",
-      },
-      {
-        name: "Task 2",
-        createdAt: new Date(Date.now()),
-        id: Date.now() + 20,
-        description: "",
-      }
-    ],
-    completed: [
-      {
-        name: "Completed task",
-        createdAt: new Date(Date.now()),
-        id: Date.now() + 40,
-        description: "",
-      }
-    ]
-  },
-  {
-    name: "My favourite list",
-    id: 1,
-    tasks: [],
-    completed: []
-  }
-]
-
-// TODO: API call to retrieve List
-const getList = (id: number) : list_T | null => {
-  return lists.find(list => list.id === id) || null;
-}
-
 export const currListReducer = (state: currListState_T, action : currListAction_T) : currListState_T => {
   const assertNotEmpty = (obj : Object | null) => {
     if (obj === null) {
@@ -67,7 +27,7 @@ export const currListReducer = (state: currListState_T, action : currListAction_
 
   switch(action.type) {
     case 'set':
-      return { list: getList(action.listId) };
+      return { list: { ...action.list } };
 
     case 'remove':
       return { list: null };

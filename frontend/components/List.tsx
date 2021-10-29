@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEllipsisH, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons'
 import AddTask from "./AddTask";
 import Task from "./Task";
-import TodoBlock from "./ToDoBlock";
+import TodoBlock from "./TodoBlock";
 import { useState } from "react";
 import TaskDetails from "./TaskDetails";
 import React from "react";

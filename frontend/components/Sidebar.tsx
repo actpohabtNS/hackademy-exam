@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import Image from "next/image";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
@@ -6,9 +6,19 @@ import AddList from "./AddList";
 import SidebarBottom from "./SidebarBottom";
 import { ListHeadsContext } from "../context/listHeadsContext";
 import ListHead from "./ListHead";
+import { loadListHeads } from "../pages/api/lists";
 
 const Sidebar = () => {
-  const { state } = useContext(ListHeadsContext);
+  const { state, dispatch } = useContext(ListHeadsContext);
+
+  // component did mount
+  useEffect(() => {
+    async function fetchData() {
+      const listHeads = await loadListHeads();
+      dispatch({ type: 'set', listHeads })
+    }
+    fetchData();
+  }, [dispatch]);
 
   return (
     <div className="w-2/12 h-screen p-4 bg-yellow-350 flex flex-col items-start relative gap-y-3">
@@ -27,6 +37,7 @@ const Sidebar = () => {
       </div>
 
       {
+        state.listHeads &&
         state.listHeads.map(listHead => <ListHead
           listName={listHead.name}
           listId={listHead.id}
