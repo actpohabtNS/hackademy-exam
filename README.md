@@ -11,6 +11,6 @@ Hackademy exam implementation. NOTE: It is prohibited to copy/paste or plagiariz
 
 ## NOTE
 
-When registering a user, provide a correct email (containing @ symbol) and a password >= 7 symbols, containing at least one digit. Sorry for the inconvenience.
+When registering a user, provide a correct email (containing @ symbol) and a password at least 8 characters long. Sorry for the inconvenience.
 
-(this condition was removed in *after-deadline* branch)
+(this condition was reduced to 4 in *after-deadline* branch)
