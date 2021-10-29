@@ -8,24 +8,10 @@ import { ListHeadsContext } from "../context/listHeadsContext";
 import ListHead from "./ListHead";
 import { loadListHeads } from "../pages/api/lists";
 import Router from "next/router";
+import { signOut } from "../pages/api/auth";
 
 const Sidebar = () => {
   const { state, dispatch } = useContext(ListHeadsContext);
-
-  // component did mount
-  useEffect(() => {
-    async function fetchData() {
-      const response = await loadListHeads();
-      if (response.data) {
-        dispatch({ type: 'set', listHeads: response.data })
-      } else {
-        if (response.status === 401) {
-          Router.push('/login')
-        }
-      }
-    }
-    fetchData();
-  }, [dispatch]);
 
   return (
     <div className="w-2/12 h-screen p-4 bg-yellow-350 flex flex-col items-start relative gap-y-3">

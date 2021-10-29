@@ -1,10 +1,10 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faICursor, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 
-import TodoBlock from "./TodoBlock";
 import { useContext } from 'react';
 import { ListHeadsContext } from '../context/listHeadsContext';
 import { CurrListContext } from '../context/currListContext';
+import { deleteList } from '../pages/api/lists';
 
 type Props = {
   className?: string,
@@ -12,12 +12,21 @@ type Props = {
 }
 
 const ListOptionsMenu = ({ className, listId } : Props) => {
-  const { dispatch: listHeadsDispatch } = useContext(ListHeadsContext);
-  const { dispatch: currListDispatch } = useContext(CurrListContext);
+  const { dispatch: dispatchListHead } = useContext(ListHeadsContext);
+  const { dispatch: dispatchCurrList } = useContext(CurrListContext);
 
   const handleRemoveClick = () => {
-    listHeadsDispatch({ type: 'delete', listHeadId: listId });
-    currListDispatch({ type: 'remove' });
+    async function delList() {
+      const status = await deleteList(listId);
+
+      if (status === 204) {
+        dispatchListHead({ type: "delete", listHeadId: listId });
+        dispatchCurrList({ type: "remove" });
+      } else {
+        console.log('Error removing list');
+      }
+    }
+    delList();
   }
 
   return (

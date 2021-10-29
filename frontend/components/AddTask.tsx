@@ -18,7 +18,7 @@ const AddTask = ({ className } : Props) => {
       if (newTask) {
         dispatch({ type: "add_task", newTask })
       } else {
-        console.log("Error creating task");
+        console.error("Error creating task");
       }
     }
     creTask();

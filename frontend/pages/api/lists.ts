@@ -11,7 +11,7 @@ export async function loadListHeads() {
 
   } catch (error) {
     console.log(error);
-    return { status: 500, data: null };
+    return { status: 401, data: null };
   }
 }
 

@@ -6,6 +6,7 @@ import { task_T } from "../pages/api/taskTypes";
 import { useContext, useState } from 'react';
 import { CurrListContext } from '../context/currListContext';
 import React from 'react';
+import { deleteTask, markTask, updateTask } from '../pages/api/tasks';
 
 type Props = {
   className?: string,
@@ -18,16 +19,47 @@ const TaskDetails = ({ className, task, selectTask, completed } : Props) => {
   const [ name, setName ] = useState(task.name);
   const [ description, setDescription ] = useState(task.description);
 
-  const { dispatch } = useContext(CurrListContext);
+  const { state, dispatch } = useContext(CurrListContext);
 
   const handleRemove = () => {
-    selectTask(null);
-    dispatch({ type: 'remove_task', taskId: task.id });
+    async function delTask() {
+      const status = await deleteTask(state.list!.id, task.id);
+
+      if (status === 204) {
+        selectTask(null);
+        dispatch({ type: 'remove_task', taskId: task.id });
+      } else {
+        console.error("Error removing task");
+      }
+    }
+    delTask();
   }
 
-  const handleUpdateName = () => {
-    dispatch({ type: 'update_task', updatedTask: { ...task, name } });
-    selectTask({ ...task, name });
+  const handleUpdateTask = () => {
+    async function updTask() {
+      const updatedTask = { ...task, name, description };
+
+      const status = await updateTask(state.list!.id, updatedTask, completed);
+      if (status === 200) {
+        dispatch({ type: 'update_task', updatedTask });
+      } else {
+        console.error("Error updating task");
+      }
+    }
+    updTask();
+  }
+
+  const handleMarkTask = () => {
+    async function marTask() {
+      const status = await markTask(state.list!.id, task.id, !completed);
+
+      if (status === 200) {
+        dispatch({ type: `mark_${completed ? "in" : ""}completed`, taskId: task.id })
+      } else {
+        console.error("Error marking task");
+      }
+    }
+    marTask();
   }
 
   return (
@@ -38,7 +70,7 @@ const TaskDetails = ({ className, task, selectTask, completed } : Props) => {
             icon={completed ? faCheckCircle : faCircle}
             size="lg"
             className="mr-3 text-yellow-350 cursor-pointer hover:text-gray-400"
-            onClick={() => dispatch({ type: `mark_${completed ? "in" : ""}completed`, taskId: task.id })}
+            onClick={handleMarkTask}
           />
 
           <input
@@ -46,7 +78,7 @@ const TaskDetails = ({ className, task, selectTask, completed } : Props) => {
             type="text"
             className="w-full font-semibold text-xl border-none focus:outline-none"
             onChange={(e) => setName(e.target.value)}
-            onBlur={handleUpdateName}
+            onBlur={handleUpdateTask}
           />
         </div>
 
@@ -57,7 +89,7 @@ const TaskDetails = ({ className, task, selectTask, completed } : Props) => {
           name="task-desc"
           onChange={(e) => setDescription(e.target.value)}
           rows={7}
-          onBlur={() => dispatch({ type: 'update_task', updatedTask: { ...task, description } })}
+          onBlur={handleUpdateTask}
         >
           {task.description}
         </textarea>

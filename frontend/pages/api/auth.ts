@@ -13,7 +13,7 @@ export function setUpBearerHeader(axios : AxiosInstance) {
   axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem("jwt")}`;
 }
 
-const removeBearerHeader = (axios : AxiosInstance) => {
+function removeBearerHeader(axios : AxiosInstance) {
   axios.defaults.headers.common['Authorization'] = "";
 }
 

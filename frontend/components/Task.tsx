@@ -6,6 +6,7 @@ import { task_T } from "../pages/api/taskTypes";
 import TodoBlock from './TodoBlock';
 import { MouseEventHandler, useContext } from 'react';
 import { CurrListContext } from '../context/currListContext';
+import { deleteTask, markTask } from '../pages/api/tasks';
 
 type Props = {
   className?: string,
@@ -15,11 +16,20 @@ type Props = {
 }
 
 const Task = ({ className, task, completed, onClick } : Props) => {
-  const { dispatch } = useContext(CurrListContext);
+  const { state, dispatch } = useContext(CurrListContext);
 
   const handleIconClick = (e: MouseEvent<SVGSVGElement>) => {
     e.stopPropagation();
-    dispatch({ type: `mark_${completed ? "in" : ""}completed`, taskId: task.id })
+    async function marTask() {
+      const status = await markTask(state.list!.id, task.id, !completed);
+      
+      if (status === 200) {
+        dispatch({ type: `mark_${completed ? "in" : ""}completed`, taskId: task.id })
+      } else {
+        console.error("Error marking task");
+      }
+    }
+    marTask();
   }
 
   return (
