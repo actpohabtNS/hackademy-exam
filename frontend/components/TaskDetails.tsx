@@ -71,7 +71,7 @@ const TaskDetails = ({ className, task, selectTask, completed } : Props) => {
           onClick={() => selectTask(null)}
         />
         <span className="text-lg text-center">
-          Created on {task.createdAt.toLocaleDateString("en-US", { weekday: 'short', month: 'long', day: 'numeric' })}
+          Created on {new Date(task.createdAt).toLocaleDateString("en-US", { weekday: 'short', month: 'long', day: 'numeric' })}
         </span>
         <FontAwesomeIcon
           icon={faTrashAlt}

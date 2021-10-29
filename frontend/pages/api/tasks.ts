@@ -11,7 +11,6 @@ export async function createTask(listId: number, name: string, createdAt: number
       createdAt,
       description
     });
-    console.log(response.data);
     return response.data;
 
   } catch (error) {

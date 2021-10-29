@@ -7,6 +7,7 @@ import SidebarBottom from "./SidebarBottom";
 import { ListHeadsContext } from "../context/listHeadsContext";
 import ListHead from "./ListHead";
 import { loadListHeads } from "../pages/api/lists";
+import Router from "next/router";
 
 const Sidebar = () => {
   const { state, dispatch } = useContext(ListHeadsContext);
@@ -14,8 +15,14 @@ const Sidebar = () => {
   // component did mount
   useEffect(() => {
     async function fetchData() {
-      const listHeads = await loadListHeads();
-      dispatch({ type: 'set', listHeads })
+      const response = await loadListHeads();
+      if (response.data) {
+        dispatch({ type: 'set', listHeads: response.data })
+      } else {
+        if (response.status === 401) {
+          Router.push('/login')
+        }
+      }
     }
     fetchData();
   }, [dispatch]);

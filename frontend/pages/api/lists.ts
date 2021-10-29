@@ -7,11 +7,11 @@ export async function loadListHeads() {
 
   try {
     const response = await axios.get('/todo/listHeads');
-    return response.data;
+    return { status: response.status, data: response.data };
 
   } catch (error) {
     console.log(error);
-    return false;
+    return { status: 500, data: null };
   }
 }
 

@@ -1,6 +1,6 @@
 export type task_T = {
   name: string,
-  createdAt: Date,
+  createdAt: number,
   id: number,
   description: string,
 }

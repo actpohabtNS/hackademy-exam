@@ -13,8 +13,6 @@ const AddTask = ({ className } : Props) => {
 
   const handleAddTask = () => {
     async function creTask() {
-      console.log("List id:", state.list);
-      
       const newTask = await createTask(state.list!.id, `Item ${state.list?.tasks ? state.list?.tasks.length + 1 : 1}`, Date.now(), "");
 
       if (newTask) {
