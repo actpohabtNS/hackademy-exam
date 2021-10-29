@@ -3,7 +3,7 @@ import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 import { faCircle } from '@fortawesome/free-regular-svg-icons'
 
 import { task_T } from "../pages/api/taskTypes";
-import TodoBlock from './ToDoBlock';
+import TodoBlock from './TodoBlock';
 import { MouseEventHandler, useContext } from 'react';
 import { CurrListContext } from '../context/currListContext';
 

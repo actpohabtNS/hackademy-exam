@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faICursor, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 
-import TodoBlock from "./ToDoBlock";
+import TodoBlock from "./TodoBlock";
 import { useContext } from 'react';
 import { ListHeadsContext } from '../context/listHeadsContext';
 import { CurrListContext } from '../context/currListContext';

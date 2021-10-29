@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUserCircle, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 
-import TodoBlock from "./ToDoBlock";
+import TodoBlock from "./TodoBlock";
 import { signOut } from '../pages/api/auth';
 import Router from 'next/router';
 
