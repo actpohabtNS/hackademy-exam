@@ -8,20 +8,19 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
-	"time"
 )
 
 type Task struct {
-	Name        string    `json:"name"`
-	Id          uint32    `json:"id"`
-	CreatedAt   time.Time `json:"created_at"`
-	Description string    `json:"description"`
+	Name        string `json:"name"`
+	Id          uint32 `json:"id"`
+	CreatedAt   uint64 `json:"createdAt"`
+	Description string `json:"description"`
 }
 
 type taskParams struct {
-	Name        string    `json:"name"`
-	CreatedAt   time.Time `json:"created_at"`
-	Description string    `json:"description"`
+	Name        string `json:"name"`
+	CreatedAt   uint64 `json:"createdAt"`
+	Description string `json:"description"`
 }
 
 func createTaskHandler(w http.ResponseWriter, r *http.Request, u User, users UserRepository) {
